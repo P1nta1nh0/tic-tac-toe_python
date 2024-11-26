@@ -7,14 +7,7 @@ board = ["-", "-", "-",
 currentPlayer = "X"
 winner = None
 gameRunning = True
-
-def menu():
-    print("1 -- Easy")
-    print("2 -- Medium")
-    print("3 -- Hard")
-    print("4 -- Check previous results")
-    print("5 -- Rules")
-    print("0 -- Exit game")
+Option = -1
 
 def printBoard(board):
   print(board[0] + "|" + board[1] + "|" + board[2])
@@ -67,7 +60,7 @@ def checkDiag(board):
 
 def checkEnd():
   global gameRunning
-  if checkDiag(board) or checkHorizontal(board) or checkVertical(board):
+  if (checkDiag(board) or checkHorizontal(board) or checkVertical(board)) and gameRunning == True:
     print(f"The winner is: {winner}")
     gameRunning = False
   elif "-" not in board:
@@ -82,68 +75,68 @@ def switchPlayer():
   else:
     currentPlayer = "X"
 
-def computer(board):
+def computer(board, option):
   while currentPlayer == "O":
-    position = random.randint(0,8)
-    if board[position] == "-":
-      board[position] = "O"
-      switchPlayer()
-
-print("TIC TAC TOE GAME\nChoose an option: \n")
-menu()
-option = int(input("Enter an option: "))
-
-def game(Option):
-  if Option == 1:
-    pass
-     
-
-
-while option != 0:
-  if option == 1:
-    while gameRunning:
-      printBoard(board)
-      playerInput(board)
-      checkEnd()
-      switchPlayer()
-      computer(board)
-      checkEnd()
-    print("Would you like to play again?")
-    pAgain = input("(Y) or (N): ")
-    if pAgain == "Y":
-      board = ["-", "-", "-",
-              "-", "-", "-",
-              "-", "-", "-"]
-      gameRunning = True
-    elif pAgain == "N":
-      print()
-      menu()
-      option = int(input("Enter an option: "))
-    
-
-  elif option == 2:
+    if option == 1:
+      position = random.randint(0,8)
+      if board[position] == "-":
+        board[position] = "O"
+        switchPlayer()
+    elif option == 2:
       pass
-  elif option == 3:
+    elif option == 3:
       pass
-  elif option == 4:
+
+def game(option):
+  global gameRunning
+  gameRunning = True
+  while gameRunning:
+    printBoard(board)
+    playerInput(board)
+    checkEnd()
+    switchPlayer()
+    computer(board, option)
+    checkEnd()
+  playAgain()
+
+def playAgain():
+  global board, gameRunning
+  board = ["-", "-", "-",
+          "-", "-", "-",
+          "-", "-", "-"]
+  print("Would you like to play again?")
+  pAgain = input("(Y) or (N): ")
+  if pAgain == "Y":
+    global Option
+    game(Option)
+  elif pAgain != "N":
+    print("Invalid Option")
+    playAgain()
+
+def opening():
+  global Option
+  print("TIC TAC TOE GAME\nChoose an option: \n")
+
+  print("1 -- Easy")
+  print("2 -- Medium")
+  print("3 -- Hard")
+  print("4 -- Check previous results")
+  print("5 -- Rules")
+  print("0 -- Exit game")  
+  Option = int(input("Enter an option: "))
+
+while Option != 0:
+  opening()
+  if 1 <= Option <= 3:
+    game(Option)
+  elif Option == 4:
       pass
-  elif option == 5:
-      print("The game is played on a 3x3 grid\n"
+  elif Option == 5:
+      print("\nThe game is played on a 3x3 grid\n"
             "First the Player chooses X or O to be their symbol\n"
             "Then it's chosen randomly who starts the game\n"
             "When the game starts the objective is to be the first to align three of your symbols, vertically, horizontally or diagonally\n"
-            "If all squares are filled and neither player has aligned three symbols, the game is a draw.")
-      print()
-      menu()
-      option = int(input("Enter an option: "))
-
-  else:
-      print("Invalid option")
-
-      print()
-      menu()
-      option = int(input("Enter an option: "))
-
+            "If all squares are filled and neither player has aligned three symbols, the game is a draw.\n")
 print("Thanks for playing, see you next time!")
 
 def minimax(minimax_board, depth, is_maximizing):
