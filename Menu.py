@@ -68,11 +68,11 @@ def checkDiag(board):
 def checkEnd():
   if checkDiag(board) or checkHorizontal(board) or checkVertical(board):
     print(f"The winner is: {winner}")
-    global gameRunning ; False
+    gameRunning = False
   elif "-" not in board:
     printBoard(board)
     print("It's a tie")
-    global gameRunning ; False
+    gameRunning = False
 
 def switchPlayer():
   global currentPlayer
