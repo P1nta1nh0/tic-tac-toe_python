@@ -66,6 +66,7 @@ def checkDiag(board):
     return True
 
 def checkEnd():
+  global gameRunning
   if checkDiag(board) or checkHorizontal(board) or checkVertical(board):
     print(f"The winner is: {winner}")
     gameRunning = False
@@ -107,6 +108,18 @@ while option != 0:
       switchPlayer()
       computer(board)
       checkEnd()
+    print("Would you like to play again?")
+    pAgain = input("(Y) or (N): ")
+    if pAgain == "Y":
+      board = ["-", "-", "-",
+              "-", "-", "-",
+              "-", "-", "-"]
+      gameRunning = True
+    elif pAgain == "N":
+      print()
+      menu()
+      option = int(input("Enter an option: "))
+    
 
   elif option == 2:
       pass
