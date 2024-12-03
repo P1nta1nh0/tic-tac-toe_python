@@ -1,13 +1,12 @@
 import random
-import sys
 
 board = ["-", "-", "-",
         "-", "-", "-",
         "-", "-", "-"]
 currentPlayer = "X"
-winner = None
 gameRunning = True
 Option = -1
+AllLines = None
 
 def printBoard(board):
   print(board[0] + "|" + board[1] + "|" + board[2])
@@ -21,48 +20,90 @@ def playerInput(board):
   if inp >= 1 and inp <= 9 and board[inp-1] == "-":
       board[inp-1] == "-"
       board[inp-1] = currentPlayer
+      updateAllLines()
+      switchPlayer()
   else:
       print("That spot is already taken")
       playerInput(board)
 
-def checkHorizontal(board):
-  global winner
-  if board[0] == board[1] == board[2] and board[1] != "-":
-    winner = board[0]
-    return True
-  elif board[3] == board[4] == board[5] and board[3] != "-":
-    winner = board[4]
-    return True
-  elif board[6] == board[7] == board[8] and board[6] != "-":
-    winner = board[6]
-    return True
+def updateAllLines():
+  global AllLines
+  line1 = [board[0], board[1], board[2]]
+  line2 = [board[3], board[4], board[5]]
+  line3 = [board[6], board[7], board[8]]
+  line4 = [board[0], board[3], board[6]]
+  line5 = [board[1], board[4], board[7]]
+  line6 = [board[2], board[5], board[8]]
+  line7 = [board[0], board[4], board[8]]
+  line8 = [board[2], board[4], board[6]]
 
-def checkVertical(board):
-  global winner
-  if board[0] == board[3] == board[6] and board[0] != "-":
-    winner = board[0]
-    return True
-  elif board[1] == board[4] == board[7] and board[1] != "-":
-    winner = board[0]
-    return True
-  elif board[2] == board[5] == board[8] and board[2] != "-":
-    winner = board[2]
-    return True
+  AllLines = [line1, line2, line3, line4, line5, line6, line7, line8]
 
-def checkDiag(board):
-  global winner
-  if board[0] == board[4] == board[8] and board[0] != "-":
-    winner = board[0]
-    return True
-  elif board[2] == board[4] == board[6] and board[2] != "-":
-    winner = board[2]
-    return True
+def checkEndAUX(player):
+  global AllLines
+  for line in AllLines:
+    numberOfChecks = 0
+    for space in line:
+      if space == player:
+        numberOfChecks += 1      
+    if numberOfChecks == 3:
+      return True
+  return False
+
+def checkRow_Play(player):
+  global AllLines
+  rowNumber = 0
+  openSpace = [0,0]
+  for row in AllLines:
+    numberOfChecks = 0
+    spaceNumber = 0
+    for space in row:
+      if space == player:
+        numberOfChecks += 1
+      elif space == "-":
+        openSpace = [rowNumber, spaceNumber]
+      spaceNumber += 1
+    if numberOfChecks == 2:
+      return arrayToNumber(openSpace)
+    rowNumber += 1
+  return arrayToNumber(openSpace)
+
+def arrayToNumber(array):
+  if array[0] == 0:
+    return array[1]
+  
+  if array[0] == 1:
+    return array[1] + 3
+  
+  if array[0] == 2:
+    return array[1] + 6
+  
+  if array[0] == 3:
+    return array[1] * 3
+  
+  if array[0] == 4:
+    return array[1] * 3 + 1
+  
+  if array[0] == 5:
+    return array[1] * 3 + 2
+  
+  if array[0] == 6:
+    return array[1] * 4
+  
+  if array[0] == 7:
+    return array[1] * 2 + 2
 
 def checkEnd():
   global gameRunning
-  if (checkDiag(board) or checkHorizontal(board) or checkVertical(board)) and gameRunning == True:
-    print(f"The winner is: {winner}")
-    gameRunning = False
+  if gameRunning == True:
+    if checkEndAUX("X"):
+      printBoard(board)
+      print("The winner is: X")
+      gameRunning = False
+    elif checkEndAUX("O"):
+      printBoard(board)
+      print("The Winner is: O")
+      gameRunning = False
   elif "-" not in board:
     printBoard(board)
     print("It's a tie")
@@ -76,6 +117,7 @@ def switchPlayer():
     currentPlayer = "X"
 
 def computer(board, option):
+  global currentPlayer
   while currentPlayer == "O":
     if option == 1:
       position = random.randint(0,8)
@@ -83,9 +125,13 @@ def computer(board, option):
         board[position] = "O"
         switchPlayer()
     elif option == 2:
-      pass
+      position = checkRow_Play(currentPlayer)
+      if board[position] == "-":
+        board[position] = "O"
+        switchPlayer()
     elif option == 3:
       pass
+    updateAllLines()
 
 def game(option):
   global gameRunning
@@ -94,7 +140,6 @@ def game(option):
     printBoard(board)
     playerInput(board)
     checkEnd()
-    switchPlayer()
     computer(board, option)
     checkEnd()
   playAgain()
@@ -138,17 +183,3 @@ while Option != 0:
             "When the game starts the objective is to be the first to align three of your symbols, vertically, horizontally or diagonally\n"
             "If all squares are filled and neither player has aligned three symbols, the game is a draw.\n")
 print("Thanks for playing, see you next time!")
-
-def minimax(minimax_board, depth, is_maximizing):
-    if checkEnd(computer, minimax_board):
-      return float('inf')
-    elif checkEnd(currentPlayer, minimax_board):
-      return float('-inf')
-    elif checkEnd(minimax_board):
-      return 0
-    
-    if is_maximizing:
-      best_score = -1000
-      
-    else:
-      pass
