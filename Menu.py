@@ -54,6 +54,7 @@ def checkRow_Play(player):
   global AllLines
   rowNumber = 0
   openSpace = [0,0]
+  storeEmptySpaces = []
   for row in AllLines:
     numberOfChecks = 0
     spaceNumber = 0
@@ -62,11 +63,12 @@ def checkRow_Play(player):
         numberOfChecks += 1
       elif space == "-":
         openSpace = [rowNumber, spaceNumber]
+        storeEmptySpaces.append(arrayToNumber(openSpace))
       spaceNumber += 1
     if numberOfChecks == 2:
-      return arrayToNumber(openSpace)
+      return [arrayToNumber(openSpace),True]
     rowNumber += 1
-  return arrayToNumber(openSpace)
+  return [random.choice(storeEmptySpaces),False]
 
 def arrayToNumber(array):
   if array[0] == 0:
@@ -119,15 +121,18 @@ def switchPlayer():
 def computer(board, option):
   global currentPlayer
   while currentPlayer == "O":
+    oppositePlayer = "X"
     if option == 1:
       position = random.randint(0,8)
       if board[position] == "-":
         board[position] = "O"
         switchPlayer()
     elif option == 2:
-      position = checkRow_Play(currentPlayer)
-      if board[position] == "-":
-        board[position] = "O"
+      result = checkRow_Play(currentPlayer)
+      if result[1] == False:
+        result = checkRow_Play(oppositePlayer)
+      if board[result[0]] == "-":
+        board[result[0]] = "O"
         switchPlayer()
     elif option == 3:
       pass
