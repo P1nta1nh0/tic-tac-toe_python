@@ -1,4 +1,6 @@
 import random
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
 
 board = ["-", "-", "-",
         "-", "-", "-",
@@ -96,19 +98,22 @@ def arrayToNumber(array):
     return array[1] * 2 + 2
 
 def checkEnd():
-  global gameRunning
+  global gameRunning, Option
   if gameRunning == True:
     if checkEndAUX("X"):
       printBoard(board)
       print("The winner is: X")
+      add_game_to_file("Victory", Option)
       gameRunning = False
     elif checkEndAUX("O"):
       printBoard(board)
       print("The Winner is: O")
+      add_game_to_file("Defeat", Option)
       gameRunning = False
   elif "-" not in board:
     printBoard(board)
     print("It's a tie")
+    add_game_to_file("Tie", Option)
     gameRunning = False
 
 def switchPlayer():
@@ -175,12 +180,50 @@ def opening():
   print("0 -- Exit game")  
   Option = int(input("Enter an option: "))
 
+def showResult():
+  file_path = "Database.xml"
+  tree = ET.parse(file_path)
+  root = tree.getroot()
+  for game in root.findall('Game'):
+    result = game.find('Result').text
+    difficulty = game.find('Difficulty').text
+    print(f"Result: {result}, Difficulty: {difficulty}")
+
+def add_game_to_file(result, difficulty):
+    file_path = "Database.xml"
+    tree = ET.parse(file_path)
+    root = tree.getroot()
+    
+    # Create a new <Game> element
+    new_game = ET.Element('Game')
+    result_elem = ET.SubElement(new_game, 'Result')
+    result_elem.text = result
+    difficulty_elem = ET.SubElement(new_game, 'Difficulty')
+    difficulty_elem.text = str(difficulty)
+    
+    # Add the new <Game> element to the root
+    root.append(new_game)
+
+     #Convert the XML tree to a string
+    rough_string = ET.tostring(root, encoding='utf-8')
+    
+    # Pretty-print the XML
+    reparsed = minidom.parseString(rough_string)
+    pretty_xml = reparsed.toprettyxml(indent="    ")
+    
+    # Remove extra blank lines
+    cleaned_xml = "\n".join([line for line in pretty_xml.splitlines() if line.strip()])
+    
+    # Save the cleaned XML back to the file
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(cleaned_xml)
+
 while Option != 0:
   opening()
   if 1 <= Option <= 3:
     game(Option)
   elif Option == 4:
-      pass
+      showResult()
   elif Option == 5:
       print("\nThe game is played on a 3x3 grid\n"
             "First the Player chooses X or O to be their symbol\n"

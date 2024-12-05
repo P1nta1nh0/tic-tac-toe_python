@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Games>
+    <Game>
+        <Result>Victory</Result>
+        <Difficulty>1</Difficulty>
+    </Game>
+    <Game>
+        <Result>Tie</Result>
+        <Difficulty>2</Difficulty>
+    </Game>
+    <Game>
+        <Result>Defeat</Result>
+        <Difficulty>3</Difficulty>
+    </Game>
+    <Game>
+        <Result>Victory</Result>
+        <Difficulty>1</Difficulty>
+    </Game>
+    <Game>
+        <Result>Victory</Result>
+        <Difficulty>1</Difficulty>
+    </Game>
+</Games>
