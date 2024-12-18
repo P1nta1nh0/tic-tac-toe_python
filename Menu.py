@@ -1,4 +1,5 @@
 import random
+import math
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
@@ -72,7 +73,7 @@ def checkRow_Play(player):
     rowNumber += 1
   return [random.choice(storeEmptySpaces),False]
 
-def arrayToNumber(array):
+def arrayToNumber(array): 
   if array[0] == 0:
     return array[1]
   
@@ -139,8 +140,6 @@ def computer(board, option):
       if board[result[0]] == "-":
         board[result[0]] = "O"
         switchPlayer()
-    elif option == 3:
-      pass
     updateAllLines()
 
 def game(option):
@@ -174,7 +173,6 @@ def opening():
 
   print("1 -- Easy")
   print("2 -- Medium")
-  print("3 -- Hard")
   print("4 -- Check previous results")
   print("5 -- Rules")
   print("0 -- Exit game")  
