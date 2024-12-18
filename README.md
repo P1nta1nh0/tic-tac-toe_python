@@ -57,7 +57,3 @@ The game maintains results (win, loss, or tie) and difficulty levels in an XML f
    - The game ends when either the player or AI wins, or the board is full (resulting in a tie).
    - Results are stored in `Database.xml`.
 
----
-
-## Example Menu
-
